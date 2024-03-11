@@ -1,0 +1,16 @@
+version: 1
+common:
+  resourcesPath: ./local/
+apps:
+  - appID: pizza-store
+    appDirPath: ./pizza-store/target
+    appPort: 8080
+    command: ["java", "-jar", "pizza-store-0.0.1-SNAPSHOT.jar"]
+  - appID: pizza-kitchen
+    appDirPath: ./pizza-kitchen/target
+    command: ["java", "-jar", "pizza-kitchen-0.0.1-SNAPSHOT.jar"]
+  - appID: pizza-delivery
+    appDirPath: ./pizza-delivery/target
+    command: ["java", "-jar", "pizza-delivery-0.0.1-SNAPSHOT.jar"]
+appLogDestination: "console"
+daprdLogDestination: "console"
