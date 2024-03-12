@@ -29,3 +29,7 @@
 ```bash
 dapr run -f . 
 ```
+
+```http
+http://localhost:8080
+```
