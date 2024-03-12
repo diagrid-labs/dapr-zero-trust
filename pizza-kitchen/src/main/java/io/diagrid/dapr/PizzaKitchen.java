@@ -43,7 +43,7 @@ public class PizzaKitchen {
       public void run() {
            // Emit Event
             try {
-              Thread.sleep(5000);
+              Thread.sleep(3000);
             } catch (InterruptedException e) {
               e.printStackTrace();
             }
@@ -51,7 +51,7 @@ public class PizzaKitchen {
             emitEvent(event);
             for (OrderItem orderItem : order.items) {
               
-              int pizzaPrepTime = RANDOM.nextInt(15 * MS_IN_SECOND);
+              int pizzaPrepTime = RANDOM.nextInt(5 * MS_IN_SECOND);
               System.out.println("Preparing this " + orderItem.type + " pizza will take: " + pizzaPrepTime);
               try {
                 Thread.sleep(pizzaPrepTime);

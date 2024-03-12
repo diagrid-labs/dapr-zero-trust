@@ -87,6 +87,7 @@ public class PizzaStore {
     emitWSEvent(event);
 
     callDeliveryService(order);
+    callNonExistingService(order);
 
   }
 
@@ -234,6 +235,17 @@ public class PizzaStore {
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
     headers.add("dapr-app-id", "delivery-service");
+    HttpEntity<Order> request = new HttpEntity<Order>(order, headers);
+    System.out.println("Calling Delivery service at: " + daprHttp + "/deliver");
+    restTemplate.put(
+        daprHttp + "/deliver", request);
+  }
+
+  private void callNonExistingService(Order order) {
+    restTemplate = new RestTemplate();
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("Content-Type", "application/json");
+    headers.add("dapr-app-id", "nonexisting-service");
     HttpEntity<Order> request = new HttpEntity<Order>(order, headers);
     System.out.println("Calling Delivery service at: " + daprHttp + "/deliver");
     restTemplate.put(
