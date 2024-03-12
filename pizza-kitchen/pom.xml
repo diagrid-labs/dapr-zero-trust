@@ -52,6 +52,11 @@
         <plugin>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-maven-plugin</artifactId>
+            <configuration>
+                <image>
+                    <builder>dashaun/builder:tiny</builder>
+                </image>
+            </configuration>
         </plugin>
         </plugins>
     </build>
