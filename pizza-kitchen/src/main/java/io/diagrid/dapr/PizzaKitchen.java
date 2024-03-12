@@ -51,7 +51,7 @@ public class PizzaKitchen {
             emitEvent(event);
             for (OrderItem orderItem : order.items) {
               
-              int pizzaPrepTime = RANDOM.nextInt(10 * MS_IN_SECOND);
+              int pizzaPrepTime = RANDOM.nextInt(5 * MS_IN_SECOND);
               System.out.println("Preparing this " + orderItem.type + " pizza will take: " + pizzaPrepTime);
               try {
                 Thread.sleep(pizzaPrepTime);
