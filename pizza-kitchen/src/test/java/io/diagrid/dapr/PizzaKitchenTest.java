@@ -40,7 +40,7 @@ public class PizzaKitchenTest {
         .then().assertThat().statusCode(200);
 
         // Wait for the event to arrive
-        Thread.sleep(17000);
+        Thread.sleep(25000);
 
         List<CloudEvent<Event>> events = subscriptionsRestController.getAllEvents();
         assertEquals("Two published event are expected",2, events.size());

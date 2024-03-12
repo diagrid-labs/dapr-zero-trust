@@ -12,7 +12,7 @@ function connect() {
         console.log("Fetching Response")
         return response.json();
     }).then((response) => {
-        var publicURL = 'ws://' + response.publicIp + '/ws';
+        var publicURL = 'ws://localhost:8080/ws';
         stompClient.brokerURL = publicURL;
         console.log(publicURL);
         console.log("Activating client")
