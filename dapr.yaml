@@ -4,13 +4,15 @@ common:
 apps:
   - appID: pizza-store
     appDirPath: ./pizza-store/target
-    appPort: 8080
-    command: ["java", "-jar", "pizza-store-0.0.1-SNAPSHOT.jar"]
+    appPort: 8082
+    command: ["java", "-jar", "pizza-store-0.0.1-SNAPSHOT.jar", "--server.-port=8082"]
   - appID: pizza-kitchen
     appDirPath: ./pizza-kitchen/target
-    command: ["java", "-jar", "pizza-kitchen-0.0.1-SNAPSHOT.jar"]
+    appPort: 8084
+    command: ["java", "-jar", "pizza-kitchen-0.0.1-SNAPSHOT.jar", "--server.port=8084"]
   - appID: pizza-delivery
     appDirPath: ./pizza-delivery/target
-    command: ["java", "-jar", "pizza-delivery-0.0.1-SNAPSHOT.jar"]
+    appPort: 8086
+    command: ["java", "-jar", "pizza-delivery-0.0.1-SNAPSHOT.jar", "--server.port=8086"]
 appLogDestination: "console"
 daprdLogDestination: "console"
