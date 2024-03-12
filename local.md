@@ -24,7 +24,7 @@
     mvn package
     ```
 
-4. Start dapr multi app run
+4. Start dapr multi app run in the root
 
 ```bash
 dapr run -f . 
