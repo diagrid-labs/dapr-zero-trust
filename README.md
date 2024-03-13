@@ -114,4 +114,4 @@ In the Application you should see the event recieved that the order moving forwa
 
 ## More information
 
-Do you want to learn more about Conductor? Join the [Diagrid Discourse](https://diagrid.discourse.group/) where developers and platform engineers share knowledge on running distributed applications at scale with Dapr.
+Do you want to learn more about Conductor? Join the [Diagrid Discourse](https://community.diagrid.io/invites/TJkNYwdh1y) where developers and platform engineers share knowledge on running distributed applications at scale with Dapr.
