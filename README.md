@@ -8,19 +8,19 @@ You can run this application on any Kubernetes cluster by following the step-by-
 
 The Pizza Store application simulates placing a Pizza Order that is going to be processed by different services. The application is composed by the Pizza Store Service which serve as the front end and backend to place the order. The order is sent to the Kitchen Service for preparation and once the order is ready to be delivered the Delivery Service takes the order to your door. 
 
-![Architecture](imgs/architecture.png)
+![Architecture](imgs/distr-pizza-store-architecture-v1.png)
 
 As any other application, these services will need to store and read data from a persistent store such as a Database and exchange messages if a more event-driven approach is needed. 
 
-This application uses PostgreSQL and Kafka, as they are well-known components among developers. 
+This application uses Redis and Kafka, as they are well-known components among developers. 
 
-![Architecture with Infra](imgs/architecture+infra.png)
+![Architecture with Infra](imgs/distr-pizza-store-architecture-clients-v1.png)
 
-As you can see in the diagram, if we want to connect to Redis from the Pizza Store Service we need to add to our applications the Redis driver that must match with the Redis instance version that we have available. A Kafka client is required in all the services that are interested in publishing or consuming messages/events. Because you have Drivers and Clients that are sensitive to the available versions on the infrastructure components, the lifecycle of the application is now bound to the lifecycle of these components. 
+As you can see in the diagram, if we want to connect to  Redis from the Pizza Store Service we need to add to our applications the Redis client that must match with the Redis instance version that we have available. A Kafka client is required in all the services that are interested in publishing or consuming messages/events. Because you have Drivers and Clients that are sensitive to the available versions on the infrastructure components, the lifecycle of the application is now bound to the lifecycle of these components. 
 
 Adding Dapr to the picture not only breaks these dependencies, but also remove responsibilities from developers of choosing the right Driver/Client and how these need to be configured for the application to work correctly. Dapr provides developers building block APIs such as the StateStore and PubSub API that developer can use without know the details of which infrastructure is going to be connected under the covers. 
 
-![Architecture with Dapr](imgs/architecture+dapr.png)
+![Architecture with Dapr](imgs/distr-pizza-store-architecture-dapr-v1.png)
 
 When using Dapr, developers can trust that the [building block APIs](https://docs.dapr.io/concepts/building-blocks-concept/) are stable, while the teams in charge of the infrastructure can swap versions and services without impacting the application code or behavior. 
 
