@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: pizza-delivery-service
-        image: salaboy/pizza-delivery:0.1.0
+        image: us-central1-docker.pkg.dev/prj-common-d-shared-89549/reg-d-common-docker-public/dapr-distributed-pizza-store/pizza-delivery:latest
         imagePullPolicy: Always
         env:
         - name: JAVA_OPTS

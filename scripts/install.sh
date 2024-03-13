@@ -1,2 +1,11 @@
 dapr uninstall
 dapr init
+cd pizza-delivery
+mvn compile
+cd ..
+cd pizza-kitchen
+mvn compile
+cd ..
+cd pizza-store
+mvn compile
+cd ..

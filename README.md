@@ -16,14 +16,13 @@ This application uses PostgreSQL and Kafka, as they are well-known components am
 
 ![Architecture with Infra](imgs/architecture+infra.png)
 
-As you can see in the diagram, if we want to connect to PostgreSQL from the Pizza Store Service we need to add to our applications the PostgreSQL driver that must match with the PostgreSQL instance version that we have available. A Kafka client is required in all the services that are interested in publishing or consuming messages/events. Because you have Drivers and Clients that are sensitive to the available versions on the infrastructure components, the lifecycle of the application is now bound to the lifecycle of these components. 
+As you can see in the diagram, if we want to connect to Redis from the Pizza Store Service we need to add to our applications the Redis driver that must match with the Redis instance version that we have available. A Kafka client is required in all the services that are interested in publishing or consuming messages/events. Because you have Drivers and Clients that are sensitive to the available versions on the infrastructure components, the lifecycle of the application is now bound to the lifecycle of these components. 
 
-Adding Dapr to the picture not only breaks these dependencies, but also remove responsabilities from developers of choosing the right Driver/Client and how these need to be configured for the application to work correctly. Dapr provides developers building block APIs such as the StateStore and PubSub API that developer can use without know the details of which infrastructure is going to be connected under the covers. 
+Adding Dapr to the picture not only breaks these dependencies, but also remove responsibilities from developers of choosing the right Driver/Client and how these need to be configured for the application to work correctly. Dapr provides developers building block APIs such as the StateStore and PubSub API that developer can use without know the details of which infrastructure is going to be connected under the covers. 
 
 ![Architecture with Dapr](imgs/architecture+dapr.png)
 
 When using Dapr, developers can trust that the [building block APIs](https://docs.dapr.io/concepts/building-blocks-concept/) are stable, while the teams in charge of the infrastructure can swap versions and services without impacting the application code or behavior. 
-
 
 ## Installation
 
@@ -31,17 +30,17 @@ If you don't have a Kubernetes Cluster you can [install KinD](https://kind.sigs.
 
 Once you have KinD installed you can run the following command to create a local Cluster: 
 
-```
+```bash
 kind create cluster
 ```
 
-Then we will install [Dapr](https://dapr.io) into our fresh new cluster by running the following command: 
+Then we will install [Dapr](https://dapr.io) into our fresh new cluster by running the following command:
 
-```
+```bash
 helm repo add dapr https://dapr.github.io/helm-charts/
 helm repo update
 helm upgrade --install dapr dapr/dapr \
---version=1.12.3 \
+--version=1.13.0 \
 --namespace dapr-system \
 --create-namespace \
 --wait
@@ -49,40 +48,35 @@ helm upgrade --install dapr dapr/dapr \
 
 ## Installing infrastructure for the application
 
-We will be using Kafka for sending messages between services: 
+Redis is used as the key/value store that is used by the Dapr State Managemenr API.
 
-```
-helm install kafka oci://registry-1.docker.io/bitnamicharts/kafka --version 22.1.5 --set "provisioning.topics[0].name=events-topic" --set "provisioning.topics[0].partitions=1" --set "persistence.size=1Gi" 
-```
-
-We will be using PostgreSQL as our persistent store, but before installing the PostgreSQL Chart run:
-
-```
-kubectl apply -f k8s/pizza-init-sql-cm.yaml
+```bash
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm repo update
+helm install redis bitnami/redis --set image.tag=6.2
 ```
 
-Then: 
+Kafka is used as the message broker for async communication between services: 
 
-```
-helm install postgresql oci://registry-1.docker.io/bitnamicharts/postgresql --version 12.5.7 --set "image.debug=true" --set "primary.initdb.user=postgres" --set "primary.initdb.password=postgres" --set "primary.initdb.scriptsConfigMap=pizza-init-sql" --set "global.postgresql.auth.postgresPassword=postgres" --set "primary.persistence.size=1Gi"
-
+```bash
+helm install kafka oci://registry-1.docker.io/bitnamicharts/kafka --version 22.1.5 --set "provisioning.topics[0].name=events-topic" --set "provisioning.topics[0].partitions=1" --set "persistence.size=1Gi"
 ```
 
 ## Installing the Application
 
 To install the application you only need to run the following command: 
 
-```
+```bash
 kubectl apply -f k8s/
 ```
 
-This install all the application services. To avoid dealing with Ingresses you can access the application by using `kubectl port-forward`, run to access the application on port `8080`: 
+This install all the application services. To avoid dealing with Ingresses you can access the application by using `kubectl port-forward`, run to access the application on port `8080`:
 
-```
+```bash
 kubectl port-forward svc/pizza-store 8080:80
 ```
 
-Then you can point your browser to [`http://localhost:8080`](http://localhost:8080) and you should see: 
+Then you can point your browser to [`http://localhost:8080`](http://localhost:8080) and you should see:
 
 ![Pizza Store](imgs/pizza-store.png)
 
@@ -112,12 +106,11 @@ http :8080/events Content-Type:application/cloudevents+json < pizza-store/event-
 In the Application you should see the event recieved that the order moving forward. 
 
 
-# Resources and references
+## Resources and references
 
-- [Platform engineering on Kubernetes Book](http://mng.bz/jjKP?ref=salaboy.com)
-- [Testcontainers for Go Developers](https://www.atomicjar.com/2023/08/local-development-of-go-applications-with-testcontainers/)
 - [Cloud native local development with Dapr and Testcontainers](https://www.diagrid.io/blog/cloud-native-local-development)
 
-# Feedback / Comments / Contribute
+
+## More information
 
 Feel free to create issues or get in touch with us using Issues or via [Twitter @Salaboy](https://twitter.com/salaboy)
