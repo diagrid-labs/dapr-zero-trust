@@ -2,15 +2,15 @@
 
 This repository contains an example for a distributed Pizza Store application using Kubernetes, [Dapr](https://dapr.io), [Spring Boot](https://spring.io/projects/spring-boot) and [Testcontainers](https://testcontainers.com) to enable developers with an awesome developer experience.
 
-You can run this application on any Kubernetes cluster by following the step-by-step instructions described in this document. [Diagrid Conductor](https://www.diagrid.io/conductor) is used to monitor the health of the applications and get insights related the Dapr configuration.
+You can run this application on any Kubernetes cluster by following the step-by-step instructions described in this document. [Diagrid Conductor](https://www.diagrid.io/conductor) is used to monitor the health of the applications and get insights related to the Dapr configuration.
 
 ![Pizza Store](imgs/pizza-store.png)
 
-The Pizza Store application simulates placing a Pizza Order that is going to be processed by different services. The application is composed by the Pizza Store Service which serve as the front end and backend to place the order. The order is sent to the Kitchen Service for preparation and once the order is ready to be delivered the Delivery Service takes the order to your door.
+The Pizza Store application simulates placing a Pizza Order that is going to be processed by different services. The application is composed by the Pizza Store Service which serves as the front-end and back-end to place the order. The order is sent to the Kitchen Service for preparation and once the order is ready to be delivered the Delivery Service takes the order to your door.
 
 ![Architecture](imgs/distr-pizza-store-architecture-v1.png)
 
-As any other application, these services will need to store and read data from a persistent store such as a Database and exchange messages if a more event-driven approach is needed.
+As any other application, these services will need to store and read data from a state store, and exchange messages via a message broker to enable asynchronous communication.
 
 This application uses Redis and Kafka, as they are well-known components among developers.
 
