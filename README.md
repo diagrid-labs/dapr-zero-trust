@@ -24,31 +24,37 @@ Adding Dapr to the picture not only breaks these dependencies, but also remove r
 
 When using Dapr, developers can trust that the [building block APIs](https://docs.dapr.io/concepts/building-blocks-concept/) are stable, while the teams in charge of the infrastructure can swap versions and services without impacting the application code or behavior. 
 
+## Prerequisites
+
+For this demo you need a Diagrid Conductor account. Sign up for a free account at [diagrid.io/conductor](https://www.diagrid.io/conductor).
+
 ## Installation
 
 If you don't have a Kubernetes Cluster you can [install KinD](https://kind.sigs.k8s.io/docs/user/quick-start/) to create a local cluster to run the application. 
 
-Once you have KinD installed you can run the following command to create a local Cluster: 
+1. Once you have KinD installed you can run the following command to create a local Cluster: 
 
 ```bash
 kind create cluster
 ```
 
-Then we will install [Dapr](https://dapr.io) into our fresh new cluster by running the following command:
+2. Install metrics server (required for Conductor):
 
 ```bash
-helm repo add dapr https://dapr.github.io/helm-charts/
-helm repo update
-helm upgrade --install dapr dapr/dapr \
---version=1.13.0 \
---namespace dapr-system \
---create-namespace \
---wait
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+
+kubectl patch deployment metrics-server -n kube-system --type "json" -p '[{"op": "add", "path": "/spec/template/spec/containers/0/args/-", "value": "--kubelet-insecure-tls"}]'
+```
+
+3. Install the Conductor Agent (get the manifest link from the [Conductor dashboard -> Create Cluster](https://conductor.diagrid.io/clusters/create). Ensure that Dapr installation is checked.
+
+```bash
+kubectl apply -f "https://api.diagrid.io/apis/diagrid.io/v1beta1/clusters\<CLUSTER-ID\>manifests?token=\<TOKEN\>"
 ```
 
 ## Installing infrastructure for the application
 
-Redis is used as the key/value store that is used by the Dapr State Managemenr API.
+1. Redis is used as the key/value store that is used by the Dapr State Managemenr API. Install Redis via helm:
 
 ```bash
 helm repo add bitnami https://charts.bitnami.com/bitnami
@@ -56,7 +62,7 @@ helm repo update
 helm install redis bitnami/redis --set image.tag=6.2
 ```
 
-Kafka is used as the message broker for async communication between services: 
+2. Kafka is used as the message broker for async communication between services. Install Kafka via helm:
 
 ```bash
 helm install kafka oci://registry-1.docker.io/bitnamicharts/kafka --version 22.1.5 --set "provisioning.topics[0].name=events-topic" --set "provisioning.topics[0].partitions=1" --set "persistence.size=1Gi"

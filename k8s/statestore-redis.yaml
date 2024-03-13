@@ -7,8 +7,10 @@ spec:
   version: v1
   metadata:
     - name: redisHost
-      value: redis-master.redis.svc.cluster.local:6379
+      value: redis-master.default.svc.cluster.local:6379
     - name: redisPassword
-      value: "<YOUR_HELM_PASSWORD>" # Update me with the Helm password
+      secretKeyRef:
+        name: redis
+        key: redis-password
 auth:
   secretStore: kubernetes
