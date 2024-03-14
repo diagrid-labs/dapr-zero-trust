@@ -35,7 +35,9 @@ If you don't have a Kubernetes Cluster you can [install KinD](https://kind.sigs.
 1. Once you have KinD installed you can run the following command to create a local Cluster: 
 
 ```bash
-kind create cluster
+kind create cluster --config=./k8s/kind-config.yaml
+
+kubectl cluster-info --context kind-kind
 ```
 
 2. Install metrics server (required for Conductor):
@@ -52,6 +54,12 @@ kubectl patch deployment metrics-server -n kube-system --type "json" -p '[{"op":
 kubectl apply -f "https://api.diagrid.io/apis/diagrid.io/v1beta1/clusters\<CLUSTER-ID\>manifests?token=\<TOKEN\>"
 ```
 
+4. Check the progress of the Dapr pods:
+
+```bash
+kubectl get pods --all-namespaces
+```
+
 ## Installing infrastructure for the application
 
 1. Redis is used as the key/value store that is used by the Dapr State Managemenr API. Install Redis via helm:
@@ -59,13 +67,13 @@ kubectl apply -f "https://api.diagrid.io/apis/diagrid.io/v1beta1/clusters\<CLUST
 ```bash
 helm repo add bitnami https://charts.bitnami.com/bitnami
 helm repo update
-helm install redis bitnami/redis --set image.tag=6.2
+helm install redis bitnami/redis --set image.tag=6.2 
 ```
 
 2. Kafka is used as the message broker for async communication between services. Install Kafka via helm:
 
 ```bash
-helm install kafka oci://registry-1.docker.io/bitnamicharts/kafka --version 22.1.5 --set "provisioning.topics[0].name=events-topic" --set "provisioning.topics[0].partitions=1" --set "persistence.size=1Gi"
+helm install kafka oci://registry-1.docker.io/bitnamicharts/kafka --version 22.1.5 --set "provisioning.topics[0].name=events-topic" --set "provisioning.topics[0].partitions=1" --set "persistence.size=250Mi"
 ```
 
 ## Installing the Application
