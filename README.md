@@ -35,7 +35,7 @@ If you don't have a Kubernetes Cluster you can [install KinD](https://kind.sigs.
 1. Once you have KinD installed you can run the following command to create a local Cluster: 
 
 ```bash
-kind create cluster --config=./k8s/kind-config.yaml
+kind create cluster
 
 kubectl cluster-info --context kind-kind
 ```
