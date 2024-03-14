@@ -1,4 +1,4 @@
-# Cloud-Native Pizza Store
+# Conductor Pizza Store
 
 This repository contains an example for a distributed Pizza Store application using Kubernetes, [Dapr](https://dapr.io), [Spring Boot](https://spring.io/projects/spring-boot) and [Testcontainers](https://testcontainers.com) to enable developers with an awesome developer experience.
 
