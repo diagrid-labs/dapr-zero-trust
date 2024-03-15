@@ -36,7 +36,7 @@
 	"forwardPorts": [8080, 8082, 8084],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand":"bash scripts/install.sh",
+	"postCreateCommand":"bash scripts/install-ddosify.sh",
 
 	// Configure tool-specific properties.
 	"customizations": {
@@ -46,8 +46,8 @@
 				"vsls-contrib.codetour"
 			]
 		}
-	}
+	},
 
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
-	// "remoteUser": "root"
+	"remoteUser": "root"
 }
