@@ -1,0 +1,10 @@
+{
+  "$schema": "https://aka.ms/codetour-schema",
+  "title": "Kind setup",
+  "steps": [
+    {
+      "title": "Install steps",
+      "description": "1. Create a kind cluster:\n\n>> kind create cluster\n\n>> kubectl cluster-info --context kind-kind\n\n2. Install metrics server and patch:\n\n>> kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml\n\n>> kubectl patch deployment metrics-server -n kube-system --type \"json\" -p '[{\"op\": \"add\", \"path\": \"/spec/template/spec/containers/0/args/-\", \"value\": \"--kubelet-insecure-tls\"}]'\n\nInstall Conductor agent:\n\n`kubectl apply -f \"link to manifest\"`\n\nCheck progress of pods:\n\n>> kubectl get pods --all-namespaces\n\nInstall Redis:\n\n>> helm repo add bitnami https://charts.bitnami.com/bitnami\n\n>> helm repo update\n\n>> helm install redis bitnami/redis --set image.tag=6.2\n\nInstall Kafka:\n\n>> helm install kafka oci://registry-1.docker.io/bitnamicharts/kafka --version 22.1.5 --set \"provisioning.topics[0].name=events-topic\" --set \"provisioning.topics[0].partitions=1\" --set \"persistence.size=250Mi\"\n\nInstall the services and Dapr components:\n\n>> kubectl apply -f k8s/\n\nForward the port:\n\n>> kubectl port-forward svc/pizza-store 8080:80\n\nRun the app:\n\n[http://localhost:8080](http://localhost:8080)\n\nDelete the cluster once you're done with the demos:\n\n>> kind delete cluster"
+    }
+  ]
+}
