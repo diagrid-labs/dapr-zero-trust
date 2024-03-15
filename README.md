@@ -45,21 +45,16 @@ kind create cluster
 kubectl cluster-info --context kind-kind
 ```
 
-2. Install metrics server (required for Conductor):
+2. Create a new Conductor cluster in the [Conductor dashboard](https://conductor.diagrid.io/). Choose for a local cluster type (kind/minikube) and enable metrics server installation.
 
-```bash
-kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
 
-kubectl patch deployment metrics-server -n kube-system --type "json" -p '[{"op": "add", "path": "/spec/template/spec/containers/0/args/-", "value": "--kubelet-insecure-tls"}]'
-```
-
-3. Install the Conductor Agent (get the manifest link from the [Conductor dashboard -> Connect Cluster](https://conductor.diagrid.io/clusters/create). Ensure that Dapr installation is checked.
+3. Once the cluster is created in Conductor, click the _Connect Cluster_ button to get the link to the manifest file that will install the Conductor agent. Copy the `kubectl apply ...` link and run it locally. 
 
 ```bash
 kubectl apply -f "https://api.diagrid.io/apis/diagrid.io/v1beta1/clusters\<CLUSTER-ID\>manifests?token=\<TOKEN\>"
 ```
 
-4. Check the progress of the Dapr pods:
+3. Check the progress of the Dapr pods creation:
 
 ```bash
 kubectl get pods --all-namespaces
