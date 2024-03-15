@@ -26,7 +26,16 @@ When using Dapr, developers can trust that the [building block APIs](https://doc
 
 ## Prerequisites
 
-For this demo you need a Diagrid Conductor account. Sign up for a free account at [diagrid.io/conductor](https://www.diagrid.io/conductor).
+1. For this demo you need a Diagrid Conductor account. Sign up for a free account at [diagrid.io/conductor](https://www.diagrid.io/conductor).
+2. To run a kind cluster locally you need [Docker Desktop]() and [kind](https://kind.sigs.k8s.io/).
+
+The demo comes with a front-end to place orders manually and see their progress. However, orders can also be placed direcly to the back-end with a REST client, such as the [VS Code REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client). To execute multiple order requests [Ddosify](https://github.com/ddosify/ddosify) can be used. 
+
+> The easiest way to run the demo is to use the devcontainer and open it in VSCode (requires Docker Desktop) or in a GitHub Codespace. The devcontainer has the following preinstalled:
+>  - kind & helm
+>  - Ddosify
+>  - VSCode REST client extension
+>  - CodeTour extension
 
 ## Installation
 
