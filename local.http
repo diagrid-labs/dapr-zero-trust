@@ -1,5 +1,0 @@
-POST http://localhost:3500/prepare
-dapr-app-id: kitchen-service
-
-###
-POST http://localhost:8082/prepare

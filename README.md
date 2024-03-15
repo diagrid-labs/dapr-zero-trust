@@ -1,22 +1,20 @@
 # Conductor Pizza Store
 
-This repository contains an example for a distributed Pizza Store application using Kubernetes, [Dapr](https://dapr.io), [Spring Boot](https://spring.io/projects/spring-boot) and [Testcontainers](https://testcontainers.com) to enable developers with an awesome developer experience.
+This repository contains an example for a distributed Pizza Store application using Kubernetes, [Dapr](https://dapr.io), [Spring Boot](https://spring.io/projects/spring-boot) and [Testcontainers](https://testcontainers.com) to enable developers with a smooth developer experience.
 
 You can run this application on any Kubernetes cluster by following the step-by-step instructions described in this document. [Diagrid Conductor](https://www.diagrid.io/conductor) is used to monitor the health of the applications and get insights related to the Dapr configuration.
 
 ![Pizza Store](imgs/pizza-store.png)
 
-The Pizza Store application simulates placing a Pizza Order that is going to be processed by different services. The application is composed by the Pizza Store Service which serves as the front-end and back-end to place the order. The order is sent to the Kitchen Service for preparation and once the order is ready to be delivered the Delivery Service takes the order to your door.
+The Pizza Store application simulates placing a Pizza order that is going to be processed by different services. The application is composed by the Pizza Store Service which serves as the front-end and back-end to place the order. The order is sent to the Kitchen Service for preparation and once the order is ready to be delivered the Delivery Service takes the order to your door.
 
 ![Architecture](imgs/distr-pizza-store-architecture-v1.png)
 
-As any other application, these services will need to store and read data from a state store, and exchange messages via a message broker to enable asynchronous communication.
-
-This application uses Redis and Kafka, as they are well-known components among developers.
+These services will need to store and read data from a state store, and exchange messages via a message broker to enable asynchronous communication. In this case Redis and Kafka are used, as these are well-known components among developers.
 
 ![Architecture with Infra](imgs/distr-pizza-store-architecture-clients-v1.png)
 
-As you can see in the diagram, if we want to connect to  Redis from the Pizza Store Service we need to add to our applications the Redis client that must match with the Redis instance version that we have available. A Kafka client is required in all the services that are interested in publishing or consuming messages/events. Because you have Drivers and Clients that are sensitive to the available versions on the infrastructure components, the lifecycle of the application is now bound to the lifecycle of these components.
+As you can see in the diagram, if we want to connect to Redis from the Pizza Store Service we need to add to our applications the Redis client that must match with the Redis instance version that we have available. A Kafka client is required in all the services that are interested in publishing or consuming messages/events. Because you have Drivers and Clients that are sensitive to the available versions on the infrastructure components, the lifecycle of the application is now bound to the lifecycle of these components.
 
 Adding Dapr to the picture not only breaks these dependencies, but also remove responsibilities from developers of choosing the right Driver/Client and how these need to be configured for the application to work correctly. Dapr provides developers building block APIs such as the StateStore and PubSub API that developer can use without know the details of which infrastructure is going to be connected under the covers.
 
@@ -27,11 +25,11 @@ When using Dapr, developers can trust that the [building block APIs](https://doc
 ## Prerequisites
 
 1. For this demo you need a Diagrid Conductor account. Sign up for a free account at [diagrid.io/conductor](https://www.diagrid.io/conductor).
-2. To run a kind cluster locally you need [Docker Desktop]() and [kind](https://kind.sigs.k8s.io/).
+2. To run a kind cluster locally you need [Docker Desktop](https://www.docker.com/products/docker-desktop/), [kind](https://kind.sigs.k8s.io/), and [helm](https://helm.sh/docs/intro/install/).
 
-The demo comes with a front-end to place orders manually and see their progress. However, orders can also be placed direcly to the back-end with a REST client, such as the [VS Code REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client). To execute multiple order requests [Ddosify](https://github.com/ddosify/ddosify) can be used. 
+The demo comes with a front-end to place orders manually and see their progress. However, orders can also be placed direcly to the back-end with a REST client, such as the [VS Code REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client). To execute multiple order requests [Ddosify](https://github.com/ddosify/ddosify) can be used.
 
-> The easiest way to run the demo is to use the devcontainer and open it in VSCode (requires Docker Desktop) or in a GitHub Codespace. The devcontainer has the following preinstalled:
+> **The easiest way to run the demo is to use the devcontainer and open it in VSCode (requires Docker Desktop) or in a GitHub Codespace.** The devcontainer has the following preinstalled:
 >  - kind & helm
 >  - Ddosify
 >  - VSCode REST client extension
@@ -39,9 +37,7 @@ The demo comes with a front-end to place orders manually and see their progress.
 
 ## Installation
 
-If you don't have a Kubernetes Cluster you can [install KinD](https://kind.sigs.k8s.io/docs/user/quick-start/) to create a local cluster to run the application. 
-
-1. Once you have KinD installed you can run the following command to create a local Cluster: 
+1. Once you have kind installed, you can run the following command to create a local cluster:
 
 ```bash
 kind create cluster
@@ -85,25 +81,36 @@ helm install redis bitnami/redis --set image.tag=6.2
 helm install kafka oci://registry-1.docker.io/bitnamicharts/kafka --version 22.1.5 --set "provisioning.topics[0].name=events-topic" --set "provisioning.topics[0].partitions=1" --set "persistence.size=250Mi"
 ```
 
-## Installing the Application
+## Installing the application
 
-To install the application you only need to run the following command:1
+To install the services you only need to run the following command:
 
 ```bash
 kubectl apply -f k8s/
 ```
 
-This install all the application services. To avoid dealing with Ingresses you can access the application by using `kubectl port-forward`, run to access the application on port `8080`:
+This installs all the application services. To avoid dealing with Ingresses you can access the application by using `kubectl port-forward`, run to access the application on port `8080`:
 
 ```bash
 kubectl port-forward svc/pizza-store 8080:80
 ```
+
+## Running the application (front-end)
 
 Then you can point your browser to [`http://localhost:8080`](http://localhost:8080) and you should see:
 
 ![Pizza Store](imgs/pizza-store.png)
 
 Make a few orders and use the [Conductor dashboard](https://conductor.diagrid.io/) to inspect the metrics charts and get insights on the distributed application.
+
+## Running the application (Ddosify or REST client)
+
+To execute many requests to the order endpoint you use Ddosify.
+
+1. Update the IP address in the [ddosify_order.json](./pizza-store/ddosify_order.json) file.
+2. Run `bash run.sh` in the root of this repo.
+
+To execute individual requests use the [test.rest](./test.rest) file with the VSCode REST client.
 
 ## Building from source / changing the services
 
@@ -121,13 +128,7 @@ This, not only start the `pizza-store` service, but it also uses the [Testcontai
 
 Once the service is up, you can place orders and simulate other events coming from the Kitchen and Delivery services by sending HTTP requests to the `/events` endpoint.
 
-Using [`httpie`](https://httpie.io/) this look like this:
-
-```bash
-http :8080/events Content-Type:application/cloudevents+json < pizza-store/event-in-prep.json
-```
-
-In the Application you should see the event received that the order moving forward.
+In the application you should see events that indicate the progress of the order.
 
 ## More information
 
