@@ -45,10 +45,12 @@ kind create cluster
 kubectl cluster-info --context kind-kind
 ```
 
-2. Create a new Conductor cluster in the [Conductor dashboard](https://conductor.diagrid.io/). Choose for a local cluster type (kind/minikube) and enable metrics server installation.
+2. In the [Conductor dashboard](https://conductor.diagrid.io/), click the _Connect Cluster_ button to configure a connection to your kubernetes cluster. Provide a name for the connection, choose _Local_ for the Kubernetes distribution, and ensure to select _Install Prerequisites_ and _Install Dapr_. Click _Create_ to create the manifest file.
+
+![Create Connection](imgs/create-connection.png)
 
 
-3. Once the cluster is created in Conductor, click the _Connect Cluster_ button to get the link to the manifest file that will install the Conductor agent. Copy the `kubectl apply ...` link and run it locally. 
+3. Copy the `kubectl apply ...` link and run it locally to apply the manifest. 
 
 ```bash
 kubectl apply -f "https://api.diagrid.io/apis/diagrid.io/v1beta1/clusters\<CLUSTER-ID\>manifests?token=\<TOKEN\>"
