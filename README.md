@@ -62,6 +62,10 @@ kubectl apply -f "https://api.diagrid.io/apis/diagrid.io/v1beta1/clusters\<CLUST
 kubectl get pods --all-namespaces
 ```
 
+4. You can use Conductor to inspect the cluster health and the Dapr control plane uptime:
+
+![Cluster health](imgs/conductor-cluster.png)
+
 ## Installing infrastructure for the application
 
 1. Redis is used as the key/value store that is used by the Dapr State Managemenr API. Install Redis via helm:
@@ -80,7 +84,7 @@ helm install kafka oci://registry-1.docker.io/bitnamicharts/kafka --version 22.1
 
 ## Installing the application
 
-To install the services you only need to run the following command:
+1. To install the services you only need to run the following command:
 
 ```bash
 kubectl apply -f k8s/
@@ -92,7 +96,13 @@ This installs all the application services. To avoid dealing with Ingresses you 
 kubectl port-forward svc/pizza-store 8080:80
 ```
 
-## Running the application (front-end)
+2. In Conductor switch to the Applications tab in the cluster to view the Dapr services:
+
+![Applications](imgs/conductor-apps.png)
+
+Now you can choose to either make a pizza order via the front-end or run a script to make multiple orders.
+
+## Using the front-end application to place an order
 
 Then you can point your browser to [`http://localhost:8080`](http://localhost:8080) and you should see:
 
@@ -100,7 +110,7 @@ Then you can point your browser to [`http://localhost:8080`](http://localhost:80
 
 Make a few orders and use the [Conductor dashboard](https://conductor.diagrid.io/) to inspect the metrics charts and get insights on the distributed application.
 
-## Running the application (Ddosify or REST client)
+## Using a script or REST client to make orders
 
 To execute many requests to the order endpoint you use Ddosify.
 
@@ -108,6 +118,19 @@ To execute many requests to the order endpoint you use Ddosify.
 2. Run `bash run.sh` in the root of this repo.
 
 To execute individual requests use the [test.rest](./test.rest) file with the VSCode REST client.
+
+Once several requests pizza orders have been made check the _Apps Graph_ in Conductor to see the services and how they communicate:
+
+![Apps Graph](imgs/conductor-appgraph.png)
+
+You can isolate one service and check the connections with this service:
+
+![Apps Graph isolate](imgs/conductor-appgraph2.png)
+
+> Note that the `pizza-store-deployment` application can have issues when running in a GitHub Codespace. This is because websocket connections can't be established in Codespaces. So when the `pizza-store` is receiving messages from the Kafka topic it can't forward these messages to the websocket connection properly, resulting in HTTP 500 errors. 
+> ![Applications Issue](imgs/conductor-apps-issue.png)
+> Use the _App Notifications_ tab to inspect the metrics:
+> ![App notifications](imgs/conductor-appnotifications.png)
 
 ## Building from source / changing the services
 
