@@ -68,7 +68,6 @@ public class PizzaKitchen {
   }
 
 
-
   private void emitEvent(Event event) {
     System.out.println("> Emitting Kitchen Event: "+ event.toString());
     try (DaprClient client = (new DaprClientBuilder()).build()) {

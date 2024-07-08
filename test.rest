@@ -1,9 +1,11 @@
-### Place orders
+### Services deployed on Kubernetes with port forwarding done.
 @pizza-store = localhost:8080
-@pizza-store-k8s = 34.82.176.152
+@pizza-store-dapr = localhost:3500
+@delivery-service-dapr = localhost:3501
+@kitchen-service-dapr = localhost:3502
 
 ### Place a new order
-POST http://{{pizza-store-k8s}}/order 
+POST http://{{pizza-store}}/order 
 content-type: application/cloudevents+json
 
 {
@@ -23,8 +25,64 @@ content-type: application/cloudevents+json
 GET http://{{pizza-store}}/order
 content-type: application/cloudevents+json
 
-### Send order-in-prep event
-POST http://{{pizza-store}}/events 
+### Zero Trust App Invocation 
+### Invoke the kitchen service through pizza store service (ALLOWED).
+# This is mimicing the call that the pizza store service makes to its Dapr sidecar.
+PUT http://{{pizza-store-dapr}}/v1.0/invoke/kitchen-service/method/prepare
+content-type: application/cloudevents+json
+
+{
+    "customer": {
+      "name": "alice",
+      "email": "alice@email.com"
+    },
+    "items": [
+      {
+      "type":"vegetarian",
+      "amount": 2
+      }
+    ]
+}
+
+### Invoke the kitchen service through pizza store service. (DISALLOWED) Only PUT verbs allowed.
+# This is mimicing the call that the pizza store service makes to its Dapr sidecar.
+POST http://{{pizza-store-dapr}}/v1.0/invoke/kitchen-service/method/prepare
+content-type: application/cloudevents+json
+
+{
+    "customer": {
+      "name": "alice",
+      "email": "alice@email.com"
+    },
+    "items": [
+      {
+      "type":"vegetarian",
+      "amount": 2
+      }
+    ]
+}
+
+### Invoke the kitchen service through the delivery service. (DISALLOWED) Only pizza store service allowed.
+# This is mimicing the call that the delivery service makes to its Dapr sidecar.
+PUT http://{{delivery-service-dapr}}/v1.0/invoke/kitchen-service/method/prepare
+content-type: application/cloudevents+json
+{
+    "customer": {
+      "name": "alice",
+      "email": "alice@email.com"
+    },
+    "items": [
+      {
+      "type":"vegetarian",
+      "amount": 2
+      }
+    ]
+}
+
+### Zero Trust Async Communication
+### Publish an event from kitchen service to the message broker (ALLOWED).
+# This is mimicing the call that the kitchen service makes to its Dapr sidecar.
+POST http://{{kitchen-service-dapr}}/v1.0/publish/pubsub/topic
 content-type: application/cloudevents+json
 
 {
@@ -53,8 +111,71 @@ content-type: application/cloudevents+json
     }
 }
 
-### Send order completed event
-POST http://{{pizza-store}}/events 
+### Publish an event from delivery service to the message broker. (DISALLOWED) Delivery service is not scoped to the message broker so cannot find it.
+# This is mimicing the call that the delivery service makes to its Dapr sidecar.
+POST http://{{delivery-service-dapr}}/v1.0/publish/pubsub/topic
+content-type: application/cloudevents+json
+
+{
+    "specversion" : "1.0",
+    "type" : "com.salaboy.event",
+    "data": {
+        "type": "order-on-its-way",
+        "service": "delivery",
+        "message": "Your Order is half mile away from your home.",
+        "order": {
+            "customer":
+                    {
+                        "name":"salaboy",
+                        "email":"salaboy@mail.com"
+                    },
+            "items":[
+                    {
+                        "type":"pepperoni",
+                        "amount":1
+                    }
+                ],
+            "id":"2d62b770-0a20-4f4d-a32a-893f48e831d1",
+            "orderDate":"2023-10-31T18:13:55.571+00:00",
+            "status":"delivery"
+        }
+    }
+}
+
+### Publish an event from kitchen service to the message broker. (DISALLOWED) Only topic "topic" is allowed.
+# This is mimicing the call that the kitchen service makes to its Dapr sidecar.
+POST http://{{kitchen-service-dapr}}/v1.0/publish/pubsub/topic1
+content-type: application/cloudevents+json
+
+{
+    "specversion" : "1.0",
+    "type" : "com.salaboy.event",
+    "data": {
+        "type": "order-in-preparation",
+        "service": "kitchen",
+        "message": "Your Order is in the kitchen.",
+        "order": {
+            "customer":
+                    {
+                        "name":"salaboy",
+                        "email":"salaboy@mail.com"
+                    },
+            "items":[
+                    {
+                        "type":"pepperoni",
+                        "amount":1
+                    }
+                ],
+            "id":"2d62b770-0a20-4f4d-a32a-893f48e831d1",
+            "orderDate":"2023-10-31T18:13:55.571+00:00",
+            "status":"inpreparation"
+        }
+    }
+}
+
+### Publish an event from pizza store service to the message broker. (DISALLOWED) Pizza store service is only allowed to subscribe not publish.
+# This is mimicing the call that the pizza store service makes to its Dapr sidecar.
+POST http://{{pizza-store-dapr}}/v1.0/publish/pubsub/topic
 content-type: application/cloudevents+json
 
 {

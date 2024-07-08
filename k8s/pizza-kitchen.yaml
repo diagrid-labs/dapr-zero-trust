@@ -12,7 +12,7 @@ spec:
         dapr.io/app-id: kitchen-service
         dapr.io/app-port: "8080"
         dapr.io/enabled: "true"
-        dapr.io/log-level: "debug"
+        dapr.io/config: "kitchen-config"
       labels:
         app: pizza-kitchen-service
         app.kubernetes.io/name: pizza-kitchen-service
@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: pizza-kitchen-service
-        image: us-central1-docker.pkg.dev/prj-common-d-shared-89549/reg-d-common-docker-public/dapr-distributed-pizza-store/pizza-kitchen:latest
+        image: salaboy/pizza-kitchen:0.1.0
         imagePullPolicy: Always
         env:
         - name: JAVA_OPTS
@@ -47,3 +47,14 @@ spec:
             memory: "2Gi"
         ports:
         - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kitchen-service
+spec:
+  selector:
+    app: pizza-kitchen-service
+  ports:
+  - port: 80
+    targetPort: 8080

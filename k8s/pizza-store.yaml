@@ -12,7 +12,9 @@ spec:
         dapr.io/app-id: pizza-store
         dapr.io/app-port: "8080"
         dapr.io/enabled: "true"
+        dapr.io/config: "pizza-store-config"
         dapr.io/log-level: "debug"
+        dapr.io/sidecar-listen-addresses: "0.0.0.0"
       labels:
         app: pizza-store-service
         app.kubernetes.io/name: pizza-store-service
@@ -21,7 +23,7 @@ spec:
     spec:
       containers:
       - name: pizza-store-service
-        image: us-central1-docker.pkg.dev/prj-common-d-shared-89549/reg-d-common-docker-public/dapr-distributed-pizza-store/pizza-store:latest
+        image: salaboy/pizza-store:0.1.0
         imagePullPolicy: Always
         env:
         - name: JAVA_OPTS
@@ -58,4 +60,3 @@ spec:
   ports:
   - port: 80
     targetPort: 8080
-  type: LoadBalancer

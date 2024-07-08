@@ -1,0 +1,21 @@
+apiVersion: dapr.io/v1alpha1
+kind: Configuration
+metadata:
+  name: kitchen-config
+  namespace: default
+spec:
+  features:
+    - name: HotReload
+      enabled: true
+  accessControl:
+    defaultAction: deny
+    trustDomain: td1
+    policies:
+    - appId: pizza-store
+      defaultAction: deny
+      trustDomain: td1
+      namespace: default
+      operations:
+      - name: /prepare
+        httpVerb: ['PUT']
+        action: allow

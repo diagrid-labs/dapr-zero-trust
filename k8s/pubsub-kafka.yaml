@@ -6,7 +6,18 @@ spec:
   type: pubsub.kafka
   version: v1
   metadata:
-  - name: brokers # Required. Kafka broker connection setting
+  - name: brokers 
     value:  kafka.default.svc.cluster.local:9092
   - name: authType
     value: "none"
+  - name: allowedTopics
+    value: "topic"
+  - name: protectedTopics
+    value: "topic"
+  - name: publishingScopes
+    value: "kitchen-service=topic"
+  - name: subscriptionScopes
+    value: "pizza-store=topic"
+scopes: 
+- kitchen-service
+- pizza-store

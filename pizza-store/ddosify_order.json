@@ -5,7 +5,7 @@
   "steps": [
     {
       "id": 1,
-      "url": "http://34.82.176.152/order",
+      "url": "http://<PIZZA_STORE_IP_ADDRESS>/order",
       "method": "POST",
       "payload_file": "pizza-store/order.json",
       "timeout": 2,

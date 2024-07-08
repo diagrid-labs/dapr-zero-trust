@@ -12,7 +12,7 @@ spec:
         dapr.io/app-id: delivery-service
         dapr.io/app-port: "8080"
         dapr.io/enabled: "true"
-        dapr.io/log-level: "debug"
+        dapr.io/log-l: "debug"
       labels:
         app: pizza-delivery-service
         app.kubernetes.io/name: pizza-delivery-service
@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: pizza-delivery-service
-        image: us-central1-docker.pkg.dev/prj-common-d-shared-89549/reg-d-common-docker-public/dapr-distributed-pizza-store/pizza-delivery:latest
+        image: salaboy/pizza-delivery:0.1.0
         imagePullPolicy: Always
         env:
         - name: JAVA_OPTS
