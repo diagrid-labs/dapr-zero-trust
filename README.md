@@ -4,7 +4,7 @@ This repository contains a distributed Pizza Store application using Kubernetes,
 
 To read about the application architecture and for complete instructions on how to deploy it on Kubernetes, see [Conductor Pizza Store](https://github.com/diagrid-labs/conductor-pizza-store). This repository will just discuss the zero trust layer that is implemented on top of the application.
 
-This repository accompanies the [Diagrid Zero Trust blog series](https://diagrid.ws/zero-trust-blog).
+This repository accompanies the [Diagrid Dapr Zero Trust blog](https://thenewstack.io/zero-trust-security-for-distributed-applications-with-dapr-open-source/) and was presented at [AppDeveloperCon Europe 2024](https://youtu.be/3BCIGU3EiGE?feature=shared).
 
 ## Set-up Instructions
 
